@@ -19,6 +19,14 @@ document.querySelectorAll("img").forEach(img=>{
 if(!img.alt) missingAlt++;
 });
 
+let score = 100;
+
+if(title < 30 || title > 65) score -= 10;
+if(metaLength < 70 || metaLength > 160) score -= 10;
+if(h1 == 0) score -= 10;
+if(words < 300) score -= 10;
+if(missingAlt > 0) score -= 10;
+
 sendResponse({
 titleLength: title,
 metaLength: metaLength,
@@ -26,7 +34,8 @@ wordCount: words,
 h1: h1,
 h2: h2,
 images: images,
-missingAlt: missingAlt
+missingAlt: missingAlt,
+seoScore: score
 });
 
 }
