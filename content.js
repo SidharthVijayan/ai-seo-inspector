@@ -1,75 +1,62 @@
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+// Run immediately when injected
+(function () {
 
-if (request.action === "analyze") {
+  let title = document.title.length;
 
-let title = document.title.length;
+  let meta = document.querySelector("meta[name='description']");
+  let metaLength = meta ? meta.content.length : 0;
 
-let meta = document.querySelector("meta[name='description']");
-let metaLength = meta ? meta.content.length : 0;
+  let text = document.body.innerText;
+  let words = text.split(/\s+/).length;
 
-let text = document.body.innerText;
+  let h1 = document.querySelectorAll("h1").length;
+  let h2 = document.querySelectorAll("h2").length;
 
-let words = text.split(/\s+/).length;
+  let images = document.querySelectorAll("img").length;
 
-let h1 = document.querySelectorAll("h1").length;
-let h2 = document.querySelectorAll("h2").length;
+  let missingAlt = 0;
+  document.querySelectorAll("img").forEach(img => {
+    if (!img.alt) missingAlt++;
+  });
 
-let images = document.querySelectorAll("img").length;
+  // ----- KEYWORD EXTRACTION -----
+  let cleanText = text.toLowerCase()
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 
-let missingAlt = 0;
-document.querySelectorAll("img").forEach(img=>{
-if(!img.alt) missingAlt++;
-});
+  let wordArray = cleanText.split(/\s+/);
 
+  let freq = {};
 
-// ----- KEYWORD EXTRACTION -----
+  wordArray.forEach(word => {
+    if (word.length > 4) {
+      freq[word] = (freq[word] || 0) + 1;
+    }
+  });
 
-let cleanText = text.toLowerCase()
-.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+  let sorted = Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
 
-let wordArray = cleanText.split(/\s+/);
+  // ----- SEO SCORE -----
+  let score = 100;
 
-let freq = {};
+  if (title < 30 || title > 65) score -= 10;
+  if (metaLength < 70 || metaLength > 160) score -= 10;
+  if (h1 === 0) score -= 10;
+  if (words < 300) score -= 10;
+  if (missingAlt > 0) score -= 10;
 
-wordArray.forEach(word => {
+  // 👉 Send result back to popup
+  chrome.runtime.sendMessage({
+    titleLength: title,
+    metaLength: metaLength,
+    wordCount: words,
+    h1: h1,
+    h2: h2,
+    images: images,
+    missingAlt: missingAlt,
+    seoScore: score,
+    entities: sorted
+  });
 
-if(word.length > 4){
-
-freq[word] = (freq[word] || 0) + 1;
-
-}
-
-});
-
-let sorted = Object.entries(freq)
-.sort((a,b)=>b[1]-a[1])
-.slice(0,5);
-
-
-// ----- SEO SCORE -----
-
-let score = 100;
-
-if(title < 30 || title > 65) score -= 10;
-if(metaLength < 70 || metaLength > 160) score -= 10;
-if(h1 == 0) score -= 10;
-if(words < 300) score -= 10;
-if(missingAlt > 0) score -= 10;
-
-sendResponse({
-
-titleLength: title,
-metaLength: metaLength,
-wordCount: words,
-h1: h1,
-h2: h2,
-images: images,
-missingAlt: missingAlt,
-seoScore: score,
-entities: sorted
-
-});
-
-}
-
-});
+})();
