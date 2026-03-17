@@ -3,7 +3,7 @@
   "name": "AI SEO Quick Inspector",
   "version": "1.0",
   "description": "Quickly analyze on-page SEO elements.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "AI SEO Inspector"
