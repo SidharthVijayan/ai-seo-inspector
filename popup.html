@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       padding: 12px;
-      width: 300px;
+      width: 320px;
       background: #0f172a;
       color: #e2e8f0;
     }
@@ -37,15 +37,19 @@
       font-size: 14px;
     }
 
-    .low { color: #22c55e; }      /* green */
-    .medium { color: #facc15; }   /* yellow */
-    .high { color: #ef4444; }     /* red */
+    .low { color: #22c55e; }     /* green */
+    .medium { color: #facc15; }  /* yellow */
+    .high { color: #ef4444; }    /* red */
 
     .box {
       background: #1e293b;
       padding: 8px;
       border-radius: 6px;
       margin-top: 6px;
+    }
+
+    .suggestion {
+      margin-bottom: 6px;
     }
   </style>
 </head>
@@ -57,25 +61,31 @@
   <!-- SEO SECTION -->
   <h2>SEO Overview</h2>
   <div class="box">
-    <p>SEO Score: <span class="score">Coming soon</span></p>
+    <p>Score: <span id="seoScore" class="score">-</span></p>
   </div>
 
-  <!-- PERSUASION SECTION -->
+  <!-- PERSUASION -->
   <h2>🧠 Persuasion Analysis</h2>
   <div class="box">
     <p>Score: <span id="persuasionScore" class="score">-</span></p>
   </div>
 
-  <!-- MANIPULATION SECTION -->
+  <!-- MANIPULATION -->
   <h2>🚨 Manipulation Risk</h2>
   <div class="box">
     <p>Level: <span id="manipulation" class="score">-</span></p>
   </div>
 
-  <!-- DETAILS -->
+  <!-- BREAKDOWN -->
   <h2>Breakdown</h2>
   <div class="box">
     <p id="details">Analyzing...</p>
+  </div>
+
+  <!-- AI SUGGESTIONS -->
+  <h2>💡 AI Suggestions</h2>
+  <div class="box" id="suggestions">
+    <p>Analyzing...</p>
   </div>
 
   <script src="popup.js"></script>
