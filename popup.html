@@ -13,33 +13,13 @@
       color: #e2e8f0;
     }
 
-    h1 {
-      font-size: 16px;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
+    h1 { font-size: 16px; font-weight: 600; }
 
     h2 {
       font-size: 14px;
       margin-top: 15px;
-      margin-bottom: 5px;
       border-bottom: 1px solid #334155;
-      padding-bottom: 3px;
     }
-
-    p {
-      font-size: 13px;
-      margin: 4px 0;
-    }
-
-    .score {
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .low { color: #22c55e; }     /* green */
-    .medium { color: #facc15; }  /* yellow */
-    .high { color: #ef4444; }    /* red */
 
     .box {
       background: #1e293b;
@@ -48,8 +28,25 @@
       margin-top: 6px;
     }
 
-    .suggestion {
-      margin-bottom: 6px;
+    .score { font-weight: bold; }
+
+    .low { color: #22c55e; }
+    .medium { color: #facc15; }
+    .high { color: #ef4444; }
+
+    button {
+      width: 100%;
+      padding: 6px;
+      margin-top: 5px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
     }
   </style>
 </head>
@@ -58,34 +55,35 @@
 
   <h1>&#128269; AI SEO Inspector</h1>
 
-  <!-- SEO SECTION -->
   <h2>SEO Overview</h2>
   <div class="box">
     <p>Score: <span id="seoScore" class="score">-</span></p>
   </div>
 
-  <!-- PERSUASION -->
-  <h2>🧠 Persuasion Analysis</h2>
+  <h2>🧠 Persuasion</h2>
   <div class="box">
     <p>Score: <span id="persuasionScore" class="score">-</span></p>
   </div>
 
-  <!-- MANIPULATION -->
-  <h2>🚨 Manipulation Risk</h2>
+  <h2>🚨 Manipulation</h2>
   <div class="box">
     <p>Level: <span id="manipulation" class="score">-</span></p>
   </div>
 
-  <!-- BREAKDOWN -->
   <h2>Breakdown</h2>
   <div class="box">
     <p id="details">Analyzing...</p>
   </div>
 
-  <!-- AI SUGGESTIONS -->
   <h2>💡 AI Suggestions</h2>
   <div class="box" id="suggestions">
     <p>Analyzing...</p>
+  </div>
+
+  <h2>✍️ Rewrite with AI</h2>
+  <div class="box">
+    <button id="rewriteBtn">Rewrite Content</button>
+    <p id="rewriteOutput">Click to generate improved version...</p>
   </div>
 
   <script src="popup.js"></script>
