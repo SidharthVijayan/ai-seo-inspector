@@ -1,80 +1,70 @@
-// ===== FAST TEXT EXTRACTION =====
-const fullText = document.body.innerText;
-const text = fullText.substring(0, 5000).toLowerCase(); // LIMIT for speed
+// LISTEN for popup trigger
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "analyze") {
 
-// ===== SEO CHECKS =====
-const title = document.title;
-const metaDescription = document.querySelector('meta[name="description"]')?.content || "";
-const h1Tags = document.querySelectorAll("h1");
+    // Run analysis
+    setTimeout(() => {
 
-// ===== WORD LISTS =====
-const powerWords = ["secret", "proven", "instant", "guaranteed", "exclusive"];
-const scarcityWords = ["limited", "only today", "hurry", "last chance"];
-const fearWords = ["danger", "risk", "warning", "shocking", "fear"];
+      const fullText = document.body.innerText;
+      const text = fullText.substring(0, 3000).toLowerCase();
 
-// ===== FAST COUNT FUNCTION =====
-function countWords(list, text) {
-  let count = 0;
-  for (let word of list) {
-    if (text.includes(word)) {
-      count += text.split(word).length - 1;
-    }
-  }
-  return count;
-}
+      const title = document.title;
+      const metaDescription = document.querySelector('meta[name="description"]')?.content || "";
+      const h1Tags = document.querySelectorAll("h1");
 
-// ===== COUNTS =====
-const powerCount = countWords(powerWords, text);
-const scarcityCount = countWords(scarcityWords, text);
-const fearCount = countWords(fearWords, text);
+      const powerWords = ["secret", "proven", "instant"];
+      const scarcityWords = ["limited", "hurry"];
+      const fearWords = ["danger", "risk"];
 
-// ===== SCORES =====
-let persuasionScore = Math.min(100,
-  powerCount * 2 + scarcityCount * 3 + fearCount * 2
-);
+      function countWords(list, text) {
+        let count = 0;
+        for (let word of list) {
+          if (text.includes(word)) {
+            count += text.split(word).length - 1;
+          }
+        }
+        return count;
+      }
 
-let manipulation = "LOW";
-if (persuasionScore > 60) manipulation = "HIGH";
-else if (persuasionScore > 30) manipulation = "MEDIUM";
+      const powerCount = countWords(powerWords, text);
+      const scarcityCount = countWords(scarcityWords, text);
+      const fearCount = countWords(fearWords, text);
 
-// ===== SEO SCORE =====
-let seoScore = 100;
+      let persuasionScore = Math.min(100,
+        powerCount * 2 + scarcityCount * 3 + fearCount * 2
+      );
 
-if (title.length < 30 || title.length > 60) seoScore -= 15;
-if (metaDescription.length < 50 || metaDescription.length > 160) seoScore -= 15;
-if (h1Tags.length === 0) seoScore -= 20;
-if (h1Tags.length > 1) seoScore -= 10;
+      let manipulation = "LOW";
+      if (persuasionScore > 60) manipulation = "HIGH";
+      else if (persuasionScore > 30) manipulation = "MEDIUM";
 
-// ===== AI SUGGESTIONS =====
-let suggestions = [];
+      let seoScore = 100;
 
-if (title.length < 30) {
-  suggestions.push("Make your title longer (50–60 chars ideal)");
-}
-if (metaDescription.length < 50) {
-  suggestions.push("Add a proper meta description");
-}
-if (h1Tags.length === 0) {
-  suggestions.push("Add an H1 tag");
-}
-if (persuasionScore > 70) {
-  suggestions.push("Content is too aggressive. Reduce urgency.");
-}
-if (persuasionScore < 20) {
-  suggestions.push("Add stronger emotional triggers.");
-}
+      if (title.length < 30 || title.length > 60) seoScore -= 15;
+      if (metaDescription.length < 50 || metaDescription.length > 160) seoScore -= 15;
+      if (h1Tags.length === 0) seoScore -= 20;
+      if (h1Tags.length > 1) seoScore -= 10;
 
-// ===== SEND DATA =====
-chrome.runtime.sendMessage({
-  action: "analysisResult",
-  data: {
-    seoScore,
-    persuasionScore,
-    manipulation,
-    powerCount,
-    scarcityCount,
-    fearCount,
-    suggestions,
-    text: fullText.substring(0, 1000) // SMALL for rewrite
+      let suggestions = [];
+
+      if (title.length < 30) suggestions.push("Improve title length");
+      if (metaDescription.length < 50) suggestions.push("Add meta description");
+      if (h1Tags.length === 0) suggestions.push("Add H1");
+
+      chrome.runtime.sendMessage({
+        action: "analysisResult",
+        data: {
+          seoScore,
+          persuasionScore,
+          manipulation,
+          powerCount,
+          scarcityCount,
+          fearCount,
+          suggestions,
+          text: fullText.substring(0, 1000)
+        }
+      });
+
+    }, 50);
   }
 });
