@@ -1,4 +1,6 @@
-const text = document.body.innerText.toLowerCase();
+// ===== FAST TEXT EXTRACTION =====
+const fullText = document.body.innerText;
+const text = fullText.substring(0, 5000).toLowerCase(); // LIMIT for speed
 
 // ===== SEO CHECKS =====
 const title = document.title;
@@ -10,14 +12,14 @@ const powerWords = ["secret", "proven", "instant", "guaranteed", "exclusive"];
 const scarcityWords = ["limited", "only today", "hurry", "last chance"];
 const fearWords = ["danger", "risk", "warning", "shocking", "fear"];
 
-// ===== COUNT FUNCTION =====
+// ===== FAST COUNT FUNCTION =====
 function countWords(list, text) {
   let count = 0;
-  list.forEach(word => {
-    const regex = new RegExp("\\b" + word + "\\b", "g");
-    const matches = text.match(regex);
-    if (matches) count += matches.length;
-  });
+  for (let word of list) {
+    if (text.includes(word)) {
+      count += text.split(word).length - 1;
+    }
+  }
   return count;
 }
 
@@ -47,23 +49,19 @@ if (h1Tags.length > 1) seoScore -= 10;
 let suggestions = [];
 
 if (title.length < 30) {
-  suggestions.push("Make your title longer and more descriptive (50–60 chars ideal)");
+  suggestions.push("Make your title longer (50–60 chars ideal)");
 }
-
 if (metaDescription.length < 50) {
-  suggestions.push("Add a proper meta description to improve CTR");
+  suggestions.push("Add a proper meta description");
 }
-
 if (h1Tags.length === 0) {
-  suggestions.push("Add an H1 tag to structure your content");
+  suggestions.push("Add an H1 tag");
 }
-
 if (persuasionScore > 70) {
-  suggestions.push("Your content is too aggressive. Reduce urgency & emotional pressure.");
+  suggestions.push("Content is too aggressive. Reduce urgency.");
 }
-
 if (persuasionScore < 20) {
-  suggestions.push("Add stronger emotional or persuasive words to improve engagement.");
+  suggestions.push("Add stronger emotional triggers.");
 }
 
 // ===== SEND DATA =====
@@ -76,6 +74,7 @@ chrome.runtime.sendMessage({
     powerCount,
     scarcityCount,
     fearCount,
-    suggestions
+    suggestions,
+    text: fullText.substring(0, 1000) // SMALL for rewrite
   }
 });
