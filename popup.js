@@ -1,82 +1,83 @@
 let pageText = "";
 
-// ===== COLOR LOGIC =====
-function getColorClass(value, type = "score") {
-  if (type === "risk") {
-    if (value === "HIGH") return "high";
-    if (value === "MEDIUM") return "medium";
-    return "low";
+// LOAD CACHE FIRST
+document.addEventListener("DOMContentLoaded", () => {
+
+  chrome.storage.local.get("seoData", (res) => {
+    if (res.seoData) updateUI(res.seoData);
+  });
+
+  // trigger fresh analysis
+  setTimeout(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "analyze" });
+    });
+  }, 100);
+});
+
+// UPDATE UI
+function updateUI(d) {
+  pageText = d.text || "";
+
+  document.getElementById("seoScore").innerText = d.seoScore + "%";
+  document.getElementById("persuasionScore").innerText = d.persuasionScore + "%";
+  document.getElementById("manipulation").innerText = d.manipulation;
+
+  document.getElementById("details").innerText =
+    `Power: ${d.powerCount} | Scarcity: ${d.scarcityCount} | Fear: ${d.fearCount}`;
+
+  // suggestions
+  const sugBox = document.getElementById("suggestions");
+  sugBox.innerHTML = "";
+
+  if (!d.suggestions.length) {
+    sugBox.innerHTML = "<p>All good 👍</p>";
+  } else {
+    d.suggestions.forEach(s => {
+      const p = document.createElement("p");
+      p.innerText = "• " + s;
+      sugBox.appendChild(p);
+    });
   }
 
-  if (value > 70) return "low";
-  if (value > 40) return "medium";
-  return "high";
+  // insights
+  document.getElementById("insights").innerText =
+    `Word count: ${d.wordCount}, Avg sentence length: ${d.avgSentenceLength}.
+
+Persuasion level is ${d.persuasionScore}%, indicating ${
+      d.persuasionScore > 60
+        ? "strong marketing intent."
+        : d.persuasionScore > 30
+        ? "moderate persuasion."
+        : "low persuasive impact."
+    }`;
 }
 
-// ===== RECEIVE DATA =====
+// RECEIVE LIVE
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === "analysisResult") {
-    const d = request.data;
-
-    pageText = d.text || "";
-
-    // SEO
-    const seoEl = document.getElementById("seoScore");
-    seoEl.innerText = d.seoScore + "%";
-    seoEl.className = "score " + getColorClass(d.seoScore);
-
-    // Persuasion
-    const pEl = document.getElementById("persuasionScore");
-    pEl.innerText = d.persuasionScore + "%";
-    pEl.className = "score " + getColorClass(d.persuasionScore);
-
-    // Manipulation
-    const mEl = document.getElementById("manipulation");
-    mEl.innerText = d.manipulation;
-    mEl.className = "score " + getColorClass(d.manipulation, "risk");
-
-    // Breakdown
-    document.getElementById("details").innerText =
-      `Power: ${d.powerCount} | Scarcity: ${d.scarcityCount} | Fear: ${d.fearCount}`;
-
-    // Suggestions
-    const sugBox = document.getElementById("suggestions");
-    sugBox.innerHTML = "";
-
-    if (d.suggestions.length === 0) {
-      sugBox.innerHTML = "<p>All good 👍</p>";
-    } else {
-      d.suggestions.forEach(s => {
-        const p = document.createElement("p");
-        p.innerText = "• " + s;
-        sugBox.appendChild(p);
-      });
-    }
+    updateUI(request.data);
   }
 });
 
-// ===== REWRITE BUTTON =====
+// REWRITE
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("rewriteBtn").addEventListener("click", () => {
 
     if (!pageText) {
-      document.getElementById("rewriteOutput").innerText = "No content found.";
+      document.getElementById("rewriteOutput").innerText = "Still loading...";
       return;
     }
 
-    let rewritten = pageText
+    let rewritten = "Improved Version:\n\n";
+
+    rewritten += pageText
       .replace(/very/gi, "extremely")
       .replace(/good/gi, "high-quality")
-      .replace(/buy now/gi, "consider exploring")
-      .replace(/cheap/gi, "cost-effective");
+      .replace(/bad/gi, "suboptimal");
 
-    rewritten = rewritten.substring(0, 300) + "...";
+    rewritten = rewritten.substring(0, 400) + "...";
 
     document.getElementById("rewriteOutput").innerText = rewritten;
   });
-});
-
-// ===== TRIGGER ANALYSIS =====
-chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  chrome.tabs.sendMessage(tabs[0].id, { action: "analyze" });
 });
