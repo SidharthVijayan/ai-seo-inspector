@@ -1,92 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>AI SEO Inspector</title>
+<meta charset="UTF-8">
+<title>AI SEO Inspector</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 12px;
-      width: 320px;
-      background: #0f172a;
-      color: #e2e8f0;
-    }
-
-    h1 { font-size: 16px; font-weight: 600; }
-
-    h2 {
-      font-size: 14px;
-      margin-top: 15px;
-      border-bottom: 1px solid #334155;
-    }
-
-    .box {
-      background: #1e293b;
-      padding: 8px;
-      border-radius: 6px;
-      margin-top: 6px;
-    }
-
-    .score { font-weight: bold; }
-
-    .low { color: #22c55e; }
-    .medium { color: #facc15; }
-    .high { color: #ef4444; }
-
-    button {
-      width: 100%;
-      padding: 6px;
-      margin-top: 5px;
-      border: none;
-      background: #3b82f6;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #2563eb;
-    }
-  </style>
+<style>
+body { font-family: Arial; background:#0f172a; color:#e2e8f0; padding:10px; width:320px; }
+h2 { font-size:14px; border-bottom:1px solid #334155; }
+.box { background:#1e293b; padding:8px; margin-top:6px; border-radius:6px; }
+button { width:100%; padding:6px; background:#3b82f6; color:#fff; border:none; }
+</style>
 </head>
 
 <body>
 
-  <h1>&#128269; AI SEO Inspector</h1>
+<h2>SEO</h2>
+<div class="box">Score: <span id="seoScore">-</span></div>
 
-  <h2>SEO Overview</h2>
-  <div class="box">
-    <p>Score: <span id="seoScore" class="score">-</span></p>
-  </div>
+<h2>Persuasion</h2>
+<div class="box">Score: <span id="persuasionScore">-</span></div>
 
-  <h2>🧠 Persuasion</h2>
-  <div class="box">
-    <p>Score: <span id="persuasionScore" class="score">-</span></p>
-  </div>
+<h2>Manipulation</h2>
+<div class="box">Level: <span id="manipulation">-</span></div>
 
-  <h2>🚨 Manipulation</h2>
-  <div class="box">
-    <p>Level: <span id="manipulation" class="score">-</span></p>
-  </div>
+<h2>Breakdown</h2>
+<div class="box"><p id="details">Analyzing...</p></div>
 
-  <h2>Breakdown</h2>
-  <div class="box">
-    <p id="details">Analyzing...</p>
-  </div>
+<h2>Suggestions</h2>
+<div class="box" id="suggestions"></div>
 
-  <h2>💡 AI Suggestions</h2>
-  <div class="box" id="suggestions">
-    <p>Analyzing...</p>
-  </div>
+<h2>Insights</h2>
+<div class="box"><p id="insights"></p></div>
 
-  <h2>✍️ Rewrite with AI</h2>
-  <div class="box">
-    <button id="rewriteBtn">Rewrite Content</button>
-    <p id="rewriteOutput">Click to generate improved version...</p>
-  </div>
+<h2>Rewrite</h2>
+<div class="box">
+<button id="rewriteBtn">Rewrite Content</button>
+<p id="rewriteOutput"></p>
+</div>
 
-  <script src="popup.js"></script>
+<script src="popup.js"></script>
 
 </body>
 </html>
