@@ -10,13 +10,13 @@ app.post("/analyze", async (req, res) => {
   try {
     const { content, title } = req.body;
 
-    const response = await fetch("http://localhost:11434/api/generate", {
+    const response = await fetch("http://127.0.0.1:11434/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3.2", // 🔥 IMPORTANT FIX
+        model: "llama3.2",
         prompt: `
 You are an expert SEO + AI visibility analyst.
 
@@ -50,6 +50,6 @@ ${content}
   }
 });
 
-app.listen(3000, () => {
-  console.log("✅ Backend running at http://localhost:3000");
+app.listen(3000, "127.0.0.1", () => {
+  console.log("✅ Backend running at http://127.0.0.1:3000");
 });
