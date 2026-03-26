@@ -16,7 +16,7 @@ app.post("/analyze", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3",
+        model: "llama3.2",
         prompt: `
 You are an expert SEO + AI visibility analyst.
 
