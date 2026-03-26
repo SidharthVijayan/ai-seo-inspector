@@ -1,12 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const metricsEl = document.getElementById("metrics");
-  const aiEl = document.getElementById("aiInsights");
-
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabId = tabs[0].id;
 
-    // Inject content.js every time (no refresh needed)
     chrome.scripting.executeScript(
       {
         target: { tabId },
@@ -17,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
   });
+
 });
 
 // Listen for results
