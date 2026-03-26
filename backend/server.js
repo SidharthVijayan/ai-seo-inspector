@@ -16,20 +16,17 @@ app.post("/analyze", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3.2",
+        model: "llama3.2", // 🔥 IMPORTANT FIX
         prompt: `
 You are an expert SEO + AI visibility analyst.
 
-Analyze:
-
+Give:
 1. SEO Issues
 2. AI Visibility Improvements
 3. Content Weaknesses
-4. Suggested:
-   - Meta Title
-   - Meta Description
-   - H1
-5. Scores (0-100)
+4. Suggested Meta Title, Description, H1
+5. SEO Score (0-100)
+6. AI Visibility Score (0-100)
 
 Title: ${title}
 
@@ -47,12 +44,12 @@ ${content}
     });
 
   } catch (err) {
-    res.status(500).json({
+    res.json({
       result: "Server Error: " + err.message
     });
   }
 });
 
 app.listen(3000, () => {
-  console.log("✅ Backend running on http://localhost:3000");
+  console.log("✅ Backend running at http://localhost:3000");
 });
