@@ -20,7 +20,7 @@ app.post("/analyze", async (req, res) => {
         prompt: `
 You are an expert SEO + AI visibility analyst.
 
-Analyze and return:
+Analyze:
 
 1. SEO Issues
 2. AI Visibility Improvements
@@ -29,9 +29,7 @@ Analyze and return:
    - Meta Title
    - Meta Description
    - H1
-5. Scores:
-   - SEO Score (0-100)
-   - AI Visibility Score (0-100)
+5. Scores (0-100)
 
 Title: ${title}
 
@@ -56,5 +54,5 @@ ${content}
 });
 
 app.listen(3000, () => {
-  console.log("✅ Backend running at http://localhost:3000");
+  console.log("✅ Backend running on http://localhost:3000");
 });
