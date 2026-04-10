@@ -1,47 +1,59 @@
-chrome.runtime.onMessage.addListener((request) => {
+// content.js
 
-  if (request.action === "analyze") {
+(function () {
+  try {
+    console.log("SEO & Content Structure Inspector loaded");
 
-    const fullText = document.body.innerText || "";
-    const title = document.title || "";
-
-    const wordCount = fullText.split(/\s+/).length;
-
-    const result = {
-      wordCount,
-      title,
+    // Basic page info (safe + useful)
+    const pageData = {
       url: window.location.href,
-      text: fullText.substring(0, 2000)
+      title: document.title,
+      wordCount: document.body.innerText.split(/\s+/).length
     };
 
-    chrome.runtime.sendMessage({
-      action: "analysisResult",
-      data: result
+    console.log("Page Info:", pageData);
+
+    // Optional: highlight missing H1 (visual feedback for future pro feature)
+    const h1s = document.querySelectorAll("h1");
+
+    if (h1s.length === 0) {
+      console.warn("No H1 found on this page");
+
+      // Add small visual indicator (non-intrusive)
+      const warning = document.createElement("div");
+      warning.innerText = "⚠️ No H1 tag found";
+      warning.style.position = "fixed";
+      warning.style.bottom = "10px";
+      warning.style.right = "10px";
+      warning.style.background = "#ff5252";
+      warning.style.color = "#fff";
+      warning.style.padding = "6px 10px";
+      warning.style.fontSize = "12px";
+      warning.style.borderRadius = "4px";
+      warning.style.zIndex = "999999";
+
+      document.body.appendChild(warning);
+    }
+
+    // Highlight long paragraphs (future GEO feature)
+    const paragraphs = document.querySelectorAll("p");
+
+    paragraphs.forEach(p => {
+      const wordCount = p.innerText.split(/\s+/).length;
+
+      if (wordCount > 120) {
+        p.style.outline = "2px dashed orange";
+        p.title = "Long paragraph (reduce for better readability & AI parsing)";
+      }
     });
 
-    // FIXED: 127.0.0.1
-    fetch("http://127.0.0.1:3000/analyze", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        content: result.text,
-        title: title
-      })
-    })
-    .then(res => res.json())
-    .then(ai => {
-      chrome.runtime.sendMessage({
-        action: "aiResult",
-        data: ai.result || "No AI response"
-      });
-    })
-    .catch(err => {
-      chrome.runtime.sendMessage({
-        action: "aiResult",
-        data: "AI Error: " + err.message
-      });
-    });
+    // Detect missing meta description (silent log)
+    const metaDesc = document.querySelector("meta[name='description']");
+    if (!metaDesc) {
+      console.warn("Meta description missing");
+    }
+
+  } catch (err) {
+    console.error("SEO Inspector error:", err);
   }
-});
+})();
