@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         files: ["content.js"]
       });
 
-      results.innerHTML = "<small>Analysis injected. Check page for report →</small>";
+      results.innerHTML = "<small>Analysis injected. Check page for report.</small>";
 
     } catch (error) {
       console.error(error);
