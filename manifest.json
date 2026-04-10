@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "AI SEO & LLM Inspector",
-  "version": "3.0",
-
-  "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["<all_urls>"],
-
+  "name": "SEO & Content Structure Inspector",
+  "version": "1.0",
+  "description": "Analyze on-page SEO structure including headings, meta tags, and AI-friendly content patterns.",
+  "permissions": ["activeTab", "scripting"],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_title": "SEO Inspector"
   }
 }
