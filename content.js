@@ -1,8 +1,6 @@
 (function () {
   try {
-    if (document.getElementById("seo-inspector-panel")) {
-      return;
-    }
+    if (document.getElementById("seo-inspector-panel")) return;
 
     const issues = [];
 
@@ -22,7 +20,7 @@
       panel.style.zIndex = "999999";
       panel.style.fontSize = "12px";
       panel.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
-      panel.innerHTML = "<b>🔍 SEO Structure Report</b><br/><small>Client-side analysis</small><br/><br/>";
+      panel.innerHTML = "<b>SEO Structure Report</b><br/><small>Client-side analysis</small><br/><br/>";
       document.body.appendChild(panel);
       return panel;
     }
@@ -42,9 +40,8 @@
       el.style.outline = `2px dashed ${color}`;
     }
 
-    // Checks
-    const h1 = document.querySelectorAll("h1").length;
-    if (h1 === 0) {
+    // H1
+    if (document.querySelectorAll("h1").length === 0) {
       issues.push({
         title: "H1 not found",
         reason: "Search engines rely on H1 to understand page topic",
@@ -52,17 +49,17 @@
       });
     }
 
-    const h2 = document.querySelectorAll("h2").length;
-    if (h2 === 0) {
+    // H2
+    if (document.querySelectorAll("h2").length === 0) {
       issues.push({
         title: "No H2 headings found",
-        reason: "Poor structure affects readability and SEO",
+        reason: "Poor structure affects readability",
         fix: "Break content into sections using H2"
       });
     }
 
-    const meta = document.querySelector("meta[name='description']");
-    if (!meta) {
+    // Meta
+    if (!document.querySelector("meta[name='description']")) {
       issues.push({
         title: "Meta description not found",
         reason: "Reduces search snippet control",
@@ -70,12 +67,10 @@
       });
     }
 
-    const paragraphs = document.querySelectorAll("p");
+    // Paragraphs
     let longCount = 0;
-
-    paragraphs.forEach(p => {
-      const words = p.innerText.split(/\s+/).length;
-      if (words > 120) {
+    document.querySelectorAll("p").forEach(p => {
+      if (p.innerText.split(/\s+/).length > 120) {
         longCount++;
         highlight(p, "orange");
       }
@@ -84,37 +79,39 @@
     if (longCount > 0) {
       issues.push({
         title: "Long paragraphs detected",
-        reason: "Hard to read and not AI-friendly",
+        reason: "Hard to read",
         fix: "Keep paragraphs under 80 words"
       });
     }
 
-    const lists = document.querySelectorAll("ul, ol").length;
-    if (lists === 0) {
+    // Lists
+    if (document.querySelectorAll("ul, ol").length === 0) {
       issues.push({
         title: "No lists found",
         reason: "Lists improve readability",
-        fix: "Add bullet points where possible"
+        fix: "Add bullet points"
       });
     }
 
+    // Internal links
     const links = [...document.querySelectorAll("a")];
     const internal = links.filter(a => a.href.includes(location.hostname)).length;
 
     if (internal < 3) {
       issues.push({
         title: "Low internal links",
-        reason: "Weak internal SEO structure",
+        reason: "Weak internal structure",
         fix: "Add at least 3–5 internal links"
       });
     }
 
+    // FAQ
     const text = document.body.innerText.toLowerCase();
     if (!text.includes("faq")) {
       issues.push({
         title: "FAQ section not found",
         reason: "Helps structured answers",
-        fix: "Add FAQ section with questions and answers"
+        fix: "Add FAQ section"
       });
     }
 
