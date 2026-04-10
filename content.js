@@ -1,12 +1,11 @@
-// content.js (PRO VERSION)
-
 (function () {
   try {
-    console.log("SEO Inspector PRO loaded");
+    if (document.getElementById("seo-inspector-panel")) {
+      return;
+    }
 
     const issues = [];
 
-    // ---------- HELPERS ----------
     function createPanel() {
       const panel = document.createElement("div");
       panel.id = "seo-inspector-panel";
@@ -23,7 +22,7 @@
       panel.style.zIndex = "999999";
       panel.style.fontSize = "12px";
       panel.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
-      panel.innerHTML = "<b>🔍 SEO Issues</b><br/><br/>";
+      panel.innerHTML = "<b>🔍 SEO Structure Report</b><br/><small>Client-side analysis</small><br/><br/>";
       document.body.appendChild(panel);
       return panel;
     }
@@ -39,104 +38,92 @@
       panel.appendChild(div);
     }
 
-    function highlightElement(el, color = "red") {
+    function highlight(el, color) {
       el.style.outline = `2px dashed ${color}`;
     }
 
-    // ---------- CHECKS ----------
-
-    // H1 check
-    const h1s = document.querySelectorAll("h1");
-    if (h1s.length === 0) {
+    // Checks
+    const h1 = document.querySelectorAll("h1").length;
+    if (h1 === 0) {
       issues.push({
-        title: "Missing H1",
+        title: "H1 not found",
         reason: "Search engines rely on H1 to understand page topic",
         fix: "Add one clear H1 with primary keyword"
       });
     }
 
-    // H2 check
-    const h2s = document.querySelectorAll("h2");
-    if (h2s.length === 0) {
+    const h2 = document.querySelectorAll("h2").length;
+    if (h2 === 0) {
       issues.push({
-        title: "No H2 headings",
-        reason: "Poor content structure affects readability and SEO",
-        fix: "Break content into sections using H2 tags"
+        title: "No H2 headings found",
+        reason: "Poor structure affects readability and SEO",
+        fix: "Break content into sections using H2"
       });
     }
 
-    // Meta description
-    const metaDesc = document.querySelector("meta[name='description']");
-    if (!metaDesc) {
+    const meta = document.querySelector("meta[name='description']");
+    if (!meta) {
       issues.push({
-        title: "Missing Meta Description",
-        reason: "Reduces CTR and snippet control in search",
+        title: "Meta description not found",
+        reason: "Reduces search snippet control",
         fix: "Add a 140–160 character meta description"
       });
     }
 
-    // Paragraph length
     const paragraphs = document.querySelectorAll("p");
-    let longParaCount = 0;
+    let longCount = 0;
 
     paragraphs.forEach(p => {
       const words = p.innerText.split(/\s+/).length;
       if (words > 120) {
-        longParaCount++;
-        highlightElement(p, "orange");
+        longCount++;
+        highlight(p, "orange");
       }
     });
 
-    if (longParaCount > 0) {
+    if (longCount > 0) {
       issues.push({
-        title: "Long Paragraphs",
-        reason: "Hard to read and poor for AI extraction",
+        title: "Long paragraphs detected",
+        reason: "Hard to read and not AI-friendly",
         fix: "Keep paragraphs under 80 words"
       });
     }
 
-    // Lists
     const lists = document.querySelectorAll("ul, ol").length;
     if (lists === 0) {
       issues.push({
-        title: "No Lists Found",
-        reason: "Lists improve readability and AI extraction",
-        fix: "Add bullet points for key sections"
+        title: "No lists found",
+        reason: "Lists improve readability",
+        fix: "Add bullet points where possible"
       });
     }
 
-    // Internal links
     const links = [...document.querySelectorAll("a")];
-    const internalLinks = links.filter(a => a.href.includes(location.hostname)).length;
+    const internal = links.filter(a => a.href.includes(location.hostname)).length;
 
-    if (internalLinks < 3) {
+    if (internal < 3) {
       issues.push({
-        title: "Low Internal Links",
-        reason: "Weak site structure and SEO signal",
+        title: "Low internal links",
+        reason: "Weak internal SEO structure",
         fix: "Add at least 3–5 internal links"
       });
     }
 
-    // FAQ detection
     const text = document.body.innerText.toLowerCase();
-    if (!text.includes("faq") && !text.includes("frequently asked")) {
+    if (!text.includes("faq")) {
       issues.push({
-        title: "No FAQ Section",
-        reason: "Important for AI and featured snippets",
+        title: "FAQ section not found",
+        reason: "Helps structured answers",
         fix: "Add FAQ section with questions and answers"
       });
     }
 
-    // ---------- PANEL ----------
     if (issues.length > 0) {
       const panel = createPanel();
-
-      issues.forEach(issue => {
-        addIssue(panel, issue.title, issue.reason, issue.fix);
-      });
+      issues.forEach(i => addIssue(panel, i.title, i.reason, i.fix));
     }
 
-  } catch (err) {
-    console.error("SEO Inspector PRO error:", err);
+  } catch (e) {
+    console.error(e);
   }
 })();
